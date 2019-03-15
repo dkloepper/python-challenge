@@ -22,6 +22,9 @@ import csv
 bankData = {}
 totalMonths = 0
 totalProfit = 0
+totalChange = []
+changeAmt = 0
+lastMonthVal = 0
 avgChange = 0.0
 greatestIncr = 0
 greatestIncrMonth = ""
@@ -54,15 +57,22 @@ totalMonths = len(bankData)
 
 for key, value in bankData.items():
     totalProfit += int(value)
-    if greatestIncr == 0 or int(value) > greatestIncr:
-        greatestIncr = int(value)
+    if lastMonthVal == 0:
+        changeAmt = int(value)
+    else:
+        changeAmt = int(value) - lastMonthVal
+        totalChange.append(changeAmt)
+    if greatestIncr == 0 or changeAmt > greatestIncr:
+        greatestIncr = changeAmt
         greatestIncrMonth = key
-    if greatestDecr == 0 or int(value) < greatestDecr:
-        greatestDecr = int(value)
+    if greatestDecr == 0 or changeAmt < greatestDecr:
+        greatestDecr = changeAmt
         greatestDecrMonth = key
+    lastMonthVal = int(value)
 
-avgChange = totalProfit / totalMonths
+avgChange = round((sum(totalChange) / len(totalChange)),2)
 
+#print to consolt
 print("")
 print ("FINANCIAL ANALYSIS")
 print ("----------------------------")
