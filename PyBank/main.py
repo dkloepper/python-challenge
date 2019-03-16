@@ -1,5 +1,6 @@
-#PyBank Homework
+#Homework 3 - PyBank
 #David Kloepper
+#Data Viz Bootcamp Cohort 3
 #March 16th, 2019
 
 #Import modules
