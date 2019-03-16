@@ -1,18 +1,6 @@
-#Goals:
-#Total number of months in the data
-#Net total amount of profits and losses over the entire period
-#The average of the changes in "Profit/Losses" over the entire period
-#The greatest increase in profits (date and amount) over the entire period
-#The greatest decrease in losses (date and amount) over the entire period
-
-#EXAMPLE OUTPUT:
-#Financial Analysis
-#----------------------------
-#Total Months: 86
-#Total: $38382578
-#Average  Change: $-2315.12
-#Greatest Increase in Profits: Feb-2012 ($1926159)
-#Greatest Decrease in Profits: Sep-2013 ($-2196167)
+#PyBank Homework
+#David Kloepper
+#March 16th, 2019
 
 #Import modules
 import os
@@ -31,48 +19,53 @@ greatestIncrMonth = ""
 greatestDecr = 0
 greatestDecrMonth = ""
 
-#Read in the CSV
+#Path to the input CSV
 dataPath = os.path.join('budget_data.csv')
-
-#Experimenting with DictReader
-#dataFile = csv.DictReader(open(dataPath))
-#for row in dataFile:
-#    print (row)
 
 with open(dataPath, mode='r',newline='') as dataFile:
 
-    # CSV reader specifies delimiter and variable that holds contents
+    # Initiate csv reader
     dataReader = csv.reader(dataFile, delimiter=',')
 
-    # Read the header row first (skip this step if there is now header)
+    # Read the header row first
     dataHeader = next(dataReader)
 
-    # Read each row of data after the header
-    #for row in dataReader:
-    #    bankData.update(f"row[0]:row[1]")
-
+    #Load dictionary with CSV data
     bankData = {row[0]:row[1] for row in dataReader}
 
+#Calc total months from length of dictionary
 totalMonths = len(bankData)
 
+#Loop through the dictionary
 for key, value in bankData.items():
+
+    #add to the total profit calculation
     totalProfit += int(value)
+
+    #If there is no value for previous month, just get the value
     if lastMonthVal == 0:
-        changeAmt = int(value)
+        lastMonthVal = int(value)
+    #If there is a value for last month, calculate the change from the 
     else:
         changeAmt = int(value) - lastMonthVal
         totalChange.append(changeAmt)
+        lastMonthVal = int(value)
+
+    #If the change is greater than the previously recorded increase, set that as the new largest increase and record that month
     if greatestIncr == 0 or changeAmt > greatestIncr:
         greatestIncr = changeAmt
         greatestIncrMonth = key
+
+    #If the change is less than the previously recorded decrease, set that as the new largest decrease and record that month
     if greatestDecr == 0 or changeAmt < greatestDecr:
         greatestDecr = changeAmt
         greatestDecrMonth = key
-    lastMonthVal = int(value)
 
+
+#Calculate average
 avgChange = round((sum(totalChange) / len(totalChange)),2)
 
-#print to consolt
+#Print results to the console
 print("")
 print ("FINANCIAL ANALYSIS")
 print ("----------------------------")
@@ -83,10 +76,10 @@ print(f"Greatest Increase in Profits: {greatestIncrMonth} (${greatestIncr})")
 print(f"Greatest Decrease in Profits: {greatestDecrMonth} (${greatestDecr})")
 print("")
 
-# Specify the file to write to
+# Specify the file output path
 output_path = os.path.join("Financial_Summary.csv")
 
-# Open the file using "write" mode. Specify the variable to hold the contents
+# Open the output file using "write" mode
 with open(output_path, 'w', newline='') as csvfile:
 
     # Initialize csv.writer

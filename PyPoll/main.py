@@ -1,42 +1,46 @@
+#PyPoll Homework
+#David Kloepper
+#March 16th, 2019
 
+#Import modules
 import os
 import csv
-
-#Set the file path
-dataPath = os.path.join('election_data.csv')
 
 #Function to output the results string so it can be printed to different locations
 def printResults(totVotes, results):
     resultsString = "Election Results\n"
     resultsString = resultsString + "-------------------------\n"
     resultsString = resultsString + "Total Votes: " + str(totVotes) + "\n"
-    resultsString = resultsString + "-------------------------\n"
-    #print(f"Number of Votes: {totVotes}")            
+    resultsString = resultsString + "-------------------------\n"          
+    
     winnerVotes = 0
     votePct = 0.000
+    #Loop through the candidate results and calculate the percent of vote while building results string
     for key, value in results.items():
         votePct = value/totVotes*100
-        #print(f"{key}: {votePct}% ({value})")
         resultsString = resultsString + key + ": " + str(round(votePct,3)) + "% (" + str(value) + ")\n"
         if winnerVotes == 0 or int(value) > winnerVotes:
             winner = key
             winnerVotes = int(value)
-    #print(f"WINNER: {winner}")
     resultsString = resultsString + "-------------------------\n"
     resultsString = resultsString + "Winner: " + winner + "\n"
     resultsString = resultsString + "-------------------------\n"
-
+    
+    #Function returns the string of the final results
     return resultsString
 
 #initialize the variables
 candidates = {}
 totalVotes = 0
 
-#open the electtion data file
+#Set the file path for the input data
+dataPath = os.path.join('election_data.csv')
+
+#open the election data file
 with open(dataPath,newline="") as csvfile:
     csvreader = csv.reader(csvfile)
 
-    #skip the header
+    #skip the header row
     line = next(csvreader,None)
 
     #Read through the CSV
@@ -56,12 +60,13 @@ with open(dataPath,newline="") as csvfile:
         else:
             candidates[candidate] = 1
 
-#Print results to the terminal
+#Print results to the terminal, calling the print results function
 print(printResults(totalVotes,candidates))
 
-#Print results to a text file
+#Set file path for output file
 output_path = os.path.join("Election_Results.txt")
 
+#Print results to a text file, calling print results function
 with open(output_path, 'w') as txtfile:
     txtfile.write(printResults(totalVotes,candidates))
 
